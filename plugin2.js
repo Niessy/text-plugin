@@ -2,7 +2,9 @@
 // import data into LS
 (function ( $ ) {
     $.fn.txt2text = function ( options ) {
-        load();
+        if ( localStorage["txt2textisLoaded"] === undefined ) {
+            load();
+        }
         this.on('keyup',function(e){
             if(e.keyCode === 32){
                 this.value = replaceValues(this.value);
@@ -12,11 +14,19 @@
     };
 
     function replaceValues( fieldval ){
-        var splitarr = fieldval.split($.fn.txt2text.re);
+        var splitarr = fieldval.split(whitespace);
         for (var i = 0; i < splitarr.length; i++) {
-            var val = localStorage[splitarr[i]];
+            var word = splitarr[i].toLowerCase();
+            var p = word.match(punctuation);
+            if (p !== null) {
+               word = word.replace(punctuation, '');
+            }
+            var val = localStorage[word];
             if ( val !== undefined ) {
-                splitarr[i] = localStorage[splitarr[i]];
+                splitarr[i] = localStorage[word];
+                if ( p !== null ) {
+                    splitarr[i] += p[0];
+                }
             }
         }
         fieldval = splitarr.join(" ");
@@ -28,9 +38,16 @@
         for (var i = 0; i < $.fn.txt2text.array1.length; i++) {
             localStorage.setItem($.fn.txt2text.array2[i], $.fn.txt2text.array1[i]);
         }
+        localStorage.setItem("txt2textisLoaded", true);
+        console.log("Loaded txt2text");
     }
 
-    $.fn.txt2text.re = new RegExp("[\\s]+");
+    var whitespace = new RegExp("[\\s]+");
+    var punctuation = new RegExp("[!?.,;()]");
+
+    $.fn.txt2text.addPhrase = function(shortform, longform) {
+
+    };
 
     $.fn.txt2text.array1 = [
         'oh my god',
@@ -48,7 +65,7 @@
          'tomorrow',
          'tomorrow',
          'as far as I know',
-         'away from keyboard',
+        'away from keyboard',
          'good game',
          'good luck and have fun',
          'good luck and have fun',
@@ -132,7 +149,8 @@
          'ya really',
          "you're on your own",
          "you're welcome",
-         'you know what'
+         'you know what',
+        'be right there'
     ];
 
     $.fn.txt2text.array2 = [
@@ -141,100 +159,101 @@
             'rofl',
             'rly',
             'u',
-              'sec',
-              'secs',
-             '1sec',
-             'tmrw',
-             '2mrw',
-             '2maro',
-             '2marrow',
-             '2moz',
-             '2mozz',
-             'afaik',
-             'afk',
-             'gg',
-             'glhf',
-             'gl hf',
-             'asap',
-             'atm',
-             'bbiab',
-             'brb',
-             'btw',
-             'cu',
-             'cya',
-             'dftt',
-             'dnd',
-             'doa',
-             'faq',
-             'fu',
-             'fyi',
-             'ftl',
-             'ftw',
-             'gbtw',
-             'gfu',
-             'gj',
-             'gtfo',
-             'gr8',
-             'hf',
-             'h8',
-             'idc',
-             'idk',
-             'irl',
-             'iow',
-             'jk',
-             'jks',
-             'jkz',
-             'l2p',
-             'l8er',
-             'l8r',
-             'lfg',
-             'lmk',
-             'ltns',
-             'mmo',
-             'mmorpg',
-             'rpg',
-             'm8',
-             'mtfbwu',
-             'n1',
-             'ne1',
-             'ne one',
-             'ne 1',
-             'any1',
-             'any 1',
-             'myob',
-             'orly',
-             'o rly',
-             'o really',
-             'omfg',
-             'foat',
-             'ysnp',
-             'oic',
-             'omw',
-             'otoh',
-             'os',
-             'p2p',
-             'pos',
-             'ppl',
-             'pw',
-             'pov',
-             'pmsl',
-             'plmk',
-             'qft',
-             'rl',
-             'stfu',
-            'tbh',
-             'ty',
-             'ttyl',
-             'twimc',
-             'w8',
-             'wtg',
-             'w2g',
-             'wp',
-             'wug',
-             'wth',
-             'yarly',
-             'yoyo',
-             'yw',
-             'ykw'
+          'sec',
+          'secs',
+         '1sec',
+         'tmrw',
+         '2mrw',
+         '2maro',
+         '2marrow',
+         '2moz',
+         '2mozz',
+         'afaik',
+         'afk',
+         'gg',
+         'glhf',
+         'gl hf',
+         'asap',
+         'atm',
+         'bbiab',
+         'brb',
+         'btw',
+         'cu',
+         'cya',
+         'dftt',
+         'dnd',
+         'doa',
+         'faq',
+         'fu',
+         'fyi',
+         'ftl',
+         'ftw',
+         'gbtw',
+         'gfu',
+         'gj',
+         'gtfo',
+         'gr8',
+         'hf',
+         'h8',
+         'idc',
+         'idk',
+         'irl',
+         'iow',
+         'jk',
+         'jks',
+         'jkz',
+         'l2p',
+         'l8er',
+         'l8r',
+         'lfg',
+         'lmk',
+         'ltns',
+         'mmo',
+         'mmorpg',
+         'rpg',
+         'm8',
+         'mtfbwu',
+         'n1',
+         'ne1',
+         'ne one',
+         'ne 1',
+         'any1',
+         'any 1',
+         'myob',
+         'orly',
+         'o rly',
+         'o really',
+         'omfg',
+         'foat',
+         'ysnp',
+         'oic',
+         'omw',
+         'otoh',
+         'os',
+         'p2p',
+         'pos',
+         'ppl',
+         'pw',
+         'pov',
+         'pmsl',
+         'plmk',
+         'qft',
+         'rl',
+         'stfu',
+        'tbh',
+         'ty',
+         'ttyl',
+        'twimc',
+        'w8',
+        'wtg',
+        'w2g',
+        'wp',
+        'wug',
+        'wth',
+        'yarly',
+        'yoyo',
+        'yw',
+        'ykw',
+        'brt'
     ];
 }( jQuery ));
