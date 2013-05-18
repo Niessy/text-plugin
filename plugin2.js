@@ -14,11 +14,12 @@
     function replaceValues( fieldval ){
         var splitarr = fieldval.split($.fn.txt2text.re);
         for (var i = 0; i < splitarr.length; i++) {
-            val = localStorage[splitarr[i]];
+            var val = localStorage[splitarr[i]];
             if ( val !== undefined ) {
-                fieldval = fieldval.replace(splitarr[i], val);
+                splitarr[i] = localStorage[splitarr[i]];
             }
         }
+        fieldval = splitarr.join(" ");
         return fieldval;
     }
 
@@ -29,7 +30,7 @@
         }
     }
 
-    $.fn.txt2text.re = new RegExp('[ \t]');
+    $.fn.txt2text.re = new RegExp("[\\s]+");
 
     $.fn.txt2text.array1 = [
         'oh my god',
@@ -37,7 +38,8 @@
         'roll on the floor laughing',
         'really',
         'you',
-        'one second',
+        'second',
+        'seconds',
          'one second',
          'tomorrow',
          'tomorrow',
@@ -138,8 +140,9 @@
             'lol',
             'rofl',
             'rly',
-            ' u',
-              '1 sec',
+            'u',
+              'sec',
+              'secs',
              '1sec',
              'tmrw',
              '2mrw',
@@ -210,7 +213,7 @@
              'otoh',
              'os',
              'p2p',
-             ' pos ',
+             'pos',
              'ppl',
              'pw',
              'pov',
@@ -220,7 +223,7 @@
              'rl',
              'stfu',
             'tbh',
-             ' ty ',
+             'ty',
              'ttyl',
              'twimc',
              'w8',

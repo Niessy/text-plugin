@@ -14,9 +14,10 @@
             for (var i = 0; i < splitarr.length; i++) {
                 val = localStorage[splitarr[i]];
                 if ( val !== undefined ) {
-                    fieldval = fieldval.replace(splitarr[i], val);
+                    splitarr[i] = localStorage[splitarr[i]];
                 }
             }
+            fieldval = splitarr.join(" ");
             return fieldval;
         }
     };
