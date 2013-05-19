@@ -1,5 +1,5 @@
 // TODO
-// import data into LS
+//
 (function ( $ ) {
     $.fn.txt2text = function ( options ) {
         if ( localStorage["txt2textisLoaded"] === undefined ) {
@@ -13,32 +13,41 @@
 
     };
 
+    // (lol) regexp to match words and letters
+    // lol replace with LS thingy
+    //
     function replaceValues( fieldval ){
         var splitarr = fieldval.split(whitespace);
         for (var i = 0; i < splitarr.length - 1; i++) {
             var originalWord = splitarr[i];
+            var numNLetters = originalWord.match(lettersAndNumbers)[0];
+            console.log(numNLetters);
             var allCapped = originalWord === originalWord.toUpperCase();
-            var lcWord = splitarr[i].toLowerCase();
-            var p = [];
-            while (lcWord.match(punctuation) !== null) {
-                p = p.concat(lcWord.match(punctuation));
-                lcWord = lcWord.replace(punctuation, '');
-            }
+            // var lcWord = splitarr[i].toLowerCase();
+            var lcWord = numNLetters.toLowerCase();
+            // var p = [];
+            // while (lcWord.match(punctuation) !== null) {
+            //     p = p.concat(lcWord.match(punctuation));
+            //     lcWord = lcWord.replace(punctuation, '');
+            // }
             var val = localStorage[lcWord];
             if ( val !== undefined ) {
                 splitarr[i] = localStorage[lcWord];
                 if ( allCapped ) {
                     splitarr[i] = splitarr[i].toUpperCase();
-                } else if ( originalWord[0] === originalWord[0].toUpperCase() ) {
+                } else if ( originalWord[0].match(capitals) !== null && originalWord[0].match(digits) === null) {
                     var norm = splitarr[i][0],
                         uc   = splitarr[i][0].toUpperCase();
                     splitarr[i] = splitarr[i].replace(norm, uc);
                 }
-                for (var j = 0; j < p.length; j++) {
-                    splitarr[i] += p[j];
-                }
+                // for (var j = 0; j < p.length; j++) {
+                //     splitarr[i] += p[j];
+                // }
+                splitarr[i] = originalWord.replace(numNLetters, splitarr[i]);
+
             }
         }
+        console.log(splitarr);
         fieldval = splitarr.join(" ");
         return fieldval;
     }
@@ -52,13 +61,16 @@
         console.log("Loaded txt2text");
     }
 
-    var whitespace = new RegExp("[\\s]+");
-    var punctuation = new RegExp("[!?.,;()]");
+    // var whitespace = new RegExp("[\\s]+");
+    var whitespace = new RegExp("[^\\S\\n]+");
+    var punctuation = new RegExp("[!?.,;()\"]");
     var capitals = new RegExp("[A-Z]");
+    var digits = new RegExp("[\\d]");
+    var lettersAndNumbers = new RegExp("[A-z0-9]+");
 
-    $.fn.txt2text.addPhrase = function(shortform, longform) {
-        if ( localStorage[shortform] !== longform) {
-            localStorage.setItem(shortform, longform);
+    $.fn.txt2text.addPhrase = function(acronym, phrase) {
+        if ( localStorage[acronym] !== phrase) {
+            localStorage.setItem(acronym, phrase);
         }
     };
 
