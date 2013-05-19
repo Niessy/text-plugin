@@ -15,16 +15,25 @@
 
     function replaceValues( fieldval ){
         var splitarr = fieldval.split(whitespace);
-        for (var i = 0; i < splitarr.length; i++) {
-            var word = splitarr[i].toLowerCase();
+        for (var i = 0; i < splitarr.length - 1; i++) {
+            var originalWord = splitarr[i];
+            var allCapped = originalWord === originalWord.toUpperCase();
+            var lcWord = splitarr[i].toLowerCase();
             var p = [];
-            while (word.match(punctuation) !== null) {
-                p = p.concat(word.match(punctuation));
-                word = word.replace(punctuation, '');
+            while (lcWord.match(punctuation) !== null) {
+                p = p.concat(lcWord.match(punctuation));
+                lcWord = lcWord.replace(punctuation, '');
             }
-            var val = localStorage[word];
+            var val = localStorage[lcWord];
             if ( val !== undefined ) {
-                splitarr[i] = localStorage[word];
+                splitarr[i] = localStorage[lcWord];
+                if ( allCapped ) {
+                    splitarr[i] = splitarr[i].toUpperCase();
+                } else if ( originalWord[0] === originalWord[0].toUpperCase() ) {
+                    var norm = splitarr[i][0],
+                        uc   = splitarr[i][0].toUpperCase();
+                    splitarr[i] = splitarr[i].replace(norm, uc);
+                }
                 for (var j = 0; j < p.length; j++) {
                     splitarr[i] += p[j];
                 }
@@ -45,6 +54,7 @@
 
     var whitespace = new RegExp("[\\s]+");
     var punctuation = new RegExp("[!?.,;()]");
+    var capitals = new RegExp("[A-Z]");
 
     $.fn.txt2text.addPhrase = function(shortform, longform) {
         if ( localStorage[shortform] !== longform) {
@@ -227,7 +237,8 @@
         'please',
         'seriously',
         'seriously',
-        'ready'
+        'ready',
+        'what'
     ];
 
     $.fn.txt2text.array2 = [
@@ -405,6 +416,7 @@
           'pls',
           'srs',
           'srsly',
-          'rdy'
+          'rdy',
+          'wut'
     ];
 }( jQuery ));
