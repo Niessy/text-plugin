@@ -1,3 +1,4 @@
+// No options yet, but maybe later?
 (function ( $ ) {
     $.fn.txt2text = function ( options ) {
         if ( localStorage["txt2textisLoaded"] === undefined ) {
@@ -29,6 +30,7 @@
     function replaceValues( fieldval ){
         fieldval = handleNewLines( fieldval );
         var splitarr = fieldval.split( whitespace );
+        console.log(splitarr);
         for (var i = 0; i < splitarr.length - 1; i++) {
             var originalWord = splitarr[i];
             var numNLetters = splitarr[i];
@@ -64,16 +66,18 @@
         console.log("Loaded txt2text");
     }
 
-    var whitespace = new RegExp("[^\\S\\n]+");
-    var punctuation = new RegExp("[!?.,;()\"]");
+    // var whitespace = new RegExp("[^\\S\\n]+");
+    var whitespace = new RegExp(" ");
     var capitals = new RegExp("[A-Z]");
     var digits = new RegExp("[\\d]");
     var lettersAndNumbers = new RegExp("[A-z0-9]+");
 
     $.fn.txt2text.addPhrase = function(acronym, phrase) {
-        if ( localStorage[acronym] !== phrase) {
+        if ( localStorage[acronym] !== undefined) {
             localStorage.setItem(acronym, phrase);
+            console.log("Added", acronym, "=>", phrase, "to localStorage.");
         }
+        console.log("That's all already there!!!");
     };
 
     $.fn.txt2text.array1 = [
