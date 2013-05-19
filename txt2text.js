@@ -72,11 +72,12 @@
     var lettersAndNumbers = new RegExp("[A-z0-9]+");
 
     $.fn.txt2text.addPhrase = function(acronym, phrase) {
-        if ( localStorage[acronym] !== undefined) {
+        if ( localStorage[acronym] === undefined) {
             localStorage.setItem(acronym, phrase);
             console.log("Added", acronym, "=>", phrase, "to localStorage.");
+        } else {
+            console.log("That's all already there!!!");
         }
-        console.log("That's all already there!!!");
     };
 
     $.fn.txt2text.array1 = [
