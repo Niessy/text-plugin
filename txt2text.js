@@ -30,7 +30,6 @@
     function replaceValues( fieldval ){
         fieldval = handleNewLines( fieldval );
         var splitarr = fieldval.split( whitespace );
-        console.log(splitarr);
         for (var i = 0; i < splitarr.length - 1; i++) {
             var originalWord = splitarr[i];
             var numNLetters = splitarr[i];
